@@ -1,0 +1,423 @@
+{
+	"name": "Quova",
+	"scopeName": "source.quova",
+	"patterns": [
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#code"
+		}
+	],
+	"repository": {
+		"classes": {
+			"begin": "(?=\\w?[\\w\\s-]*\\b(?:class|(?<!@)interface|record)\\s+[\\w$]+)",
+			"end": "(})|(;)",
+			"endCaptures": {
+				"1": {
+					"name": "punctuation.section.class.end.bracket.curly.quova"
+				},
+				"2": {
+					"name": "punctuation.terminator.quova"
+				}
+			},
+			"name": "meta.class.quova",
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#storage-modifiers"
+				},
+				{
+					"match": "(class|(?<!@)interface|record)\\s+([\\w$]+)\\s*(<.*>)?\\s*(\\(.*\\))?",
+					"captures": {
+						"1": {
+							"name": "keyword.type.$1.quova"
+						},
+						"2": {
+							"name": "entity.name.type.class.quova"
+						},
+						"3": {
+							"patterns": [
+								{
+									"include": "#type-params"
+								}
+							]
+						},
+						"4": {
+							"patterns": [
+								{
+									"include": "#value-params"
+								}
+							]
+						}
+					},
+					"name": "meta.class.identifier.java"
+				},
+				{
+					"begin": ":",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.extends.quova"
+						}
+					},
+					"end": "(?={|;)",
+					"name": "meta.definition.class.supertypes.quova",
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#supertypes"
+						}
+					]
+				},
+				{
+					"begin": "{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.class.begin.bracket.curly.quova"
+						}
+					},
+					"end": "(?=})",
+					"contentName": "meta.class.body.quova",
+					"patterns": [
+						{
+							"include": "#class-body"
+						}
+					]
+				}
+			]
+		},
+		"functions": {
+			"begin": "([\\w<].*\\s+)(?=([^=/]|/(?!/))+\\()",
+			"beginCaptures": {
+				"1": {
+					"patterns": [
+						{
+							"include": "#type-params"
+						},
+						{
+							"include": "#all-types"
+						}
+					]
+				}
+			},
+			"end": "(})|(?=;)",
+			"endCaptures": {
+				"1": {
+					"name": "punctuation.section.function.end.bracket.curly.quova"
+				}
+			},
+			"name": "meta.function.quova",
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#storage-modifiers"
+				},
+				{
+					"begin": "(\\w+)\\s*(?=\\()",
+					"beginCaptures": {
+						"1": {
+							"name": "entity.name.function.quova"
+						}
+					},
+					"end": "(?<=\\))",
+					"name": "meta.function.identifier.quova",
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#value-params"
+						}
+					]
+				},
+				{
+					"begin": "{",
+					"beginCaptures": {
+						"0": "punctuation.section.function.begin.bracket.curly.quova"
+					},
+					"end": "(?=})",
+					"patterns": [
+						{
+							"include": "#comments"
+						}
+					]
+				},
+				{
+					"begin": "=>",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.double-arrow.quova"
+						}
+					},
+					"end": "(?=;)",
+					"patterns": [
+						{
+							"include": "#comments"
+						}
+					]
+				}
+			]
+		},
+		"class-body": {
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#class-members"
+				},
+				{
+					"include": "#storage-modifiers"
+				},
+				{
+					"include": "#code"
+				}
+			]
+		},
+		"class-members": {
+			"patterns": [
+				{
+					"begin": "(?=\\=)",
+					"end": "(?=;)",
+					"patterns": [
+						{
+							"include": "#code"
+						}
+					]
+				},
+				{
+					"include": "#functions"
+				}
+			]
+		},
+		"supertypes": {
+			"patterns": [
+				{
+					"begin": "\\b(?:\\w+\\s*(\\.)\\s*)*\\w+\\b",
+					"beginCaptures": {
+						"0": {
+							"name": "entity.other.inherited-class.quova"
+						},
+						"1": {
+							"name": "punctuation.separator.period.quova"
+						}
+					},
+					"end": "(?=,|{|;)",
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#value-args"
+						},
+						{
+							"include": "#delegates"
+						}
+					]
+				},
+				{
+					"match": ",",
+					"name": "punctuation.separator.delimiter.quova"
+				}
+			]
+		},
+		"delegates": {
+			"begin": "\\s*(<-)\\s*",
+			"beginCaptures": {
+				"1": {
+					"name": "punctuation.arrow.quova"
+				}
+			},
+			"end": "(?=,|{|;)"
+		},
+		"value-params": {
+			"begin": "\\(",
+			"beginCaptures": {
+				"0": "keyword.type.quova"
+			},
+			"end": "\\)",
+			"endCaptures": {
+				"0": "punctuation.bracket.round.quova"
+			},
+			"name": "meta.params.value.quova",
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"begin": "(?<=\\(|,)",
+					"end": "\\b(\\w+)\\b\\s*(?=,|\\))",
+					"endCaptures": {
+						"1": {
+							"name": "variable.parameter.quova"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#all-types"
+						}
+					]
+				},
+				{
+					"match": ",",
+					"name": "punctuation.separator.delimiter.quova"
+				}
+			]
+		},
+		"type-params": {
+			"begin": "<",
+			"beginCaptures": {
+				"0": "keyword.type.quova"
+			},
+			"end": ">",
+			"endCaptures": {
+				"0": "punctuation.bracket.angle.quova"
+			},
+			"name": "meta.params.type.quova",
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"begin": "(?<=<|,)",
+					"end": "\\b(\\w+)\\b\\s*(?=,|>)",
+					"endCaptures": {
+						"1": {
+							"name": "variable.parameter.quova"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"match": "\\b(in|out|reified)\\b",
+							"name": "storage.modifiers.type-parameter"
+						}
+					]
+				},
+				{
+					"match": ",",
+					"name": "punctuation.separator.delimiter.quova"
+				}
+			]
+		},
+		"value-args": {
+			"begin": "\\(",
+			"beginCaptures": {
+				"0": "keyword.type.quova"
+			},
+			"end": "\\)",
+			"endCaptures": {
+				"0": "punctuation.bracket.round.quova"
+			},
+			"name": "meta.args.value.quova",
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"begin": "(?<=\\(|,)",
+					"end": "(?=,|\\))",
+					"name": "meta.args.value.arg.quova"
+				},
+				{
+					"match": ",",
+					"name": "punctuation.separator.delimiter.quova"
+				}
+			]
+		},
+		"all-types": {
+			"patterns": [
+				{
+					"include": "#primitive-types"
+				},
+				{
+					"include": "#user-types"
+				}
+			]
+		},
+		"primitive-types": {
+			"match": "\\b(void|boolean|byte|char|short|int|float|long|double)\\b",
+			"name": "storage.type.primitive.quova"
+		},
+		"user-types": {
+			"match": "\\b\\w+\\b",
+			"name": "storage.type.quova"
+		},
+		"storage-modifiers": {
+			"match": "\\b(public|private|protected|static|final|native|synchronized|abstract|transient|volatile|default|strictfp|sealed|inline)\\b",
+			"name": "storage.modifier.java"
+		},
+		"code": {
+			"patterns": [
+				{
+					"include": "#classes"
+				},
+				{
+					"include": "#functions"
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"captures": {
+						"0": {
+							"name": "punctuation.definition.comment.quova"
+						}
+					},
+					"match": "/\\*\\*/",
+					"name": "comment.block.empty.quova"
+				},
+				{
+					"include": "#comments-inline"
+				}
+			]
+		},
+		"comments-inline": {
+			"patterns": [
+				{
+					"begin": "/\\*",
+					"captures": {
+						"0": {
+							"name": "punctuation.definition.comment.quova"
+						}
+					},
+					"end": "\\*/",
+					"name": "comment.block.quova"
+				},
+				{
+					"begin": "(^[ \\t]+)?(?=//)",
+					"beginCaptures": {
+						"1": {
+							"name": "punctuation.whitespace.comment.leading.quova"
+						}
+					},
+					"end": "(?!\\G)",
+					"patterns": [
+						{
+							"begin": "//",
+							"beginCaptures": {
+								"0": {
+									"name": "punctuation.definition.comment.quova"
+								}
+							},
+							"end": "\\n",
+							"name": "comment.line.double-slash.quova"
+						}
+					]
+				}
+			]
+		}
+	}
+}

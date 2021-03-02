@@ -1,0 +1,25 @@
+{
+    "name": "quova",
+    "displayName": "Quova",
+    "description": "Quova Language Support",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.53.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "quova",
+            "aliases": ["Quova", "quova"],
+            "extensions": [".qv"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "quova",
+            "scopeName": "source.quova",
+            "path": "./syntaxes/quova.tmLanguage.json"
+        }]
+    }
+}

@@ -1,0 +1,738 @@
+{
+	"name": "Quova",
+	"scopeName": "source.quova",
+	"patterns": [
+		{
+			"include": "#comments"
+		},
+		{
+			"begin": "^#!",
+			"end": "$",
+			"name": "comment.line.shebang.quova"
+		},
+		{
+			"begin": "\\b(package)\\b\\s+",
+			"end": "\\s*(;)",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.other.package.quova"
+				}
+			},
+			"endCaptures": {
+				"1": {
+					"name": "punctuation.terminator.quova"
+				}
+			},
+			"name": "meta.package.quova",
+			"contentName": "name.package.quova",
+			"patterns": [
+				{
+					"match": "\\.",
+					"name": "punctuation.separator.quova"
+				}
+			]
+		},
+		{
+			"begin": "\\b(import)\\b\\s+",
+			"end": "(\\.\\*)?(\\s+(as)\\s+(\\w+))?\\s*(;)",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.other.import.quova"
+				}
+			},
+			"endCaptures": {
+				"1": {
+					"name": "variable.wildcard.quova"
+				},
+				"2": {
+					"match": "\\s+(as)\\s+(\\w+)",
+					"name": "meta.import.alias.quova"
+				},
+				"3": {
+					"name": "keyword.other.import.as.quova"
+				},
+				"4": {
+					"name": "name.import.alias.quova"
+				},
+				"5": {
+					"name": "punctuation.terminator.quova"
+				}
+			},
+			"name": "meta.import.quova",
+			"contentName": "name.import.quova",
+			"patterns": [
+				{
+					"match": "\\.",
+					"name": "punctuation.separator.quova"
+				}
+			]
+		},
+		{
+			"begin": "(from)\\s+",
+			"end": "\\s*(;)",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.other.import.from.quova"
+				}
+			},
+			"endCaptures": {
+				"1": {
+					"name": "punctuation.terminator.quova"
+				}
+			},
+			"name": "meta.import.selection.quova",
+			"patterns": [
+				{
+					"begin": "\\s+\\b(import)\\b\\s+",
+					"end": "(?=\\s*;)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.other.import.quova"
+						}
+					},
+					"name": "meta.import.set.quova",
+					"patterns": [
+						{
+							"match": ",",
+							"name": "punctuation.enumerator.quova"
+						}
+					]
+				},
+				{
+					"match": "\\.",
+					"name": "punctuation.separator.quova"
+				}
+			]
+		},
+		{
+			"include": "#declarations"
+		}
+	],
+	"repository": {
+		"declarations": {
+			"patterns": [
+				{
+					"include": "#class-declaration"
+				},
+				{
+					"include": "#enum-declaration"
+				},
+				{
+					"include": "#function-declaration"
+				},
+				{
+					"include": "#property-declaration"
+				}
+			]
+		},
+		"class-declaration": {
+			"begin": "(?=\\w?[\\w\\s]*\\b(((?:static|inline)\\s+)?(?<!enum\\s+)class|(?<!@)interface|record)\\b\\s+[\\w$]+)",
+			"end": "(;)|(})",
+			"endCaptures": {
+				"1": {
+					"name": "punctuation.terminator.quova"
+				},
+				"2": {
+					"name": "punctuation.bracket.curly.close.quova"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#visibility-modifiers"
+				},
+				{
+					"include": "#inheritance-modifiers"
+				},
+				{
+					"match": "\\b(sealed|inner)\\b",
+					"name": "keyword.modifier.class.quova"
+				},
+				{
+					"match": "(class|(?:static\\s+)class|(?:inline\\s+)class|interface|record)\\s+([\\w$]+)",
+					"captures": {
+						"1": {
+							"name": "keyword.type.$1.quova"
+						},
+						"2": {
+							"name": "entity.name.type.$1.quova"
+						}
+					},
+					"name": "meta.class.identifier.quova"
+				},
+				{
+					"include": "#class-arguments"
+				},
+				{
+					"begin": "{",
+					"end": "(?=})",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.bracket.curly.open.quova"
+						}
+					},
+					"contentName": "meta.class.body.quova",
+					"patterns": [
+						{
+							"include": "#class-members"
+						}
+					]
+				}
+			]
+		},
+		"enum-declaration": {
+			"begin": "(?=\\w?[\\w\\s]*\\benum(\\s+class)?(?!\\s+(?:byte|sbyte|short|ushort|int|uint|long|ulong))\\b\\s+[\\w$]+)",
+			"end": "(;)|(})",
+			"endCaptures": {
+				"1": {
+					"name": "punctuation.terminator.quova"
+				},
+				"2": {
+					"name": "punctuation.bracket.curly.close.quova"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#visibility-modifiers"
+				},
+				{
+					"match": "(enum)(\\s+class)?\\s+([\\w$]+)",
+					"captures": {
+						"1": {
+							"name": "keyword.type.enum.quova"
+						},
+						"2": {
+							"name": "keyword.type.class.quova"
+						},
+						"3": {
+							"name": "entity.name.type.enum.quova"
+						}
+					},
+					"name": "meta.enum.identifier.quova"
+				},
+				{
+					"include": "#class-arguments"
+				},
+				{
+					"begin": "{",
+					"end": "(?=})",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.bracket.curly.open.quova"
+						}
+					},
+					"contentName": "meta.enum.body.quova",
+					"patterns": [
+						{
+							"include": "#class-members"
+						},
+						{
+							"begin": "(?<={)",
+							"end": "(;)|(?=})",
+							"endCaptures": {
+								"0": {
+									"name": "punctuation.terminator.quova"
+								}								
+							},
+							"name": "meta.enum.entries.quova",
+							"patterns": [
+								{
+									"include": "#comments"
+								},
+								{
+									"begin": "(\\w+)",
+									"end": "(?=\\s*[,;}])",
+									"beginCaptures": {
+										"1": {
+											"name": "variable.other.enummember.quova"
+										}
+									},
+									"name": "meta.enum.entries.entry.quova",
+									"patterns": [
+										{
+											"include": "#comments"
+										},
+										{
+											"begin": "(?=\\()",
+											"end": "(?<=\\))(?=\\s*[{,;}])",
+											"name": "keyword.control.visibility.quova"
+										},
+										{
+											"begin": "{",
+											"beginCaptures": {
+												"0": {
+													"name": "punctuation.bracket.curly.open.quova"
+												}
+											},
+											"end": "}(?=\\s*[,;}])",
+											"endCaptures": {
+												"0": {
+													"name": "punctuation.bracket.curly.close.quova"
+												}
+											},
+											"name": "meta.enum.entries.entry.members.quova",
+											"patterns": [
+												{
+													"include": "#class-members"
+												}
+											]
+										}
+									]
+								},
+								{
+									"match": ",",
+									"name": "punctuation.enumerator.quova"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"class-arguments": {
+			"patterns": [
+				{
+					"begin": "(?=<)",
+					"end": "(?<=>)(?=\\s*[\\(:{;])",
+					"name": "meta.class.type-params.quova",
+					"patterns": [
+						{
+							"include": "#type-params"
+						}
+					]
+				},
+				{
+					"begin": "(?=\\()",
+					"end": "(?<=\\))(?=\\s*[:{;])",
+					"name": "meta.class.value-params.quova",
+					"patterns": [
+						{
+							"include": "#value-params"
+						}
+					]
+				},
+				{
+					"begin": "(:)",
+					"end": "(?=\\s*[{;])",
+					"name": "meta.supertypes.quova",
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"begin": "(?<=:|,)",
+							"end": "(?=,|{|;)",
+							"name": "meta.supertypes.supertype.quova",
+							"patterns": [
+								{
+									"include": "#comments"
+								},
+								{
+									"include": "#types"
+								},
+								{
+									"include": "#type-args"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"function-declaration": {
+			"begin": "(?=\\w?[\\w\\s]*(\\s*<.+>\\s*)?\\s*(\\b.+\\b(\\s*<.+>)?(\\s*\\[\\])*(\\s*\\?)?|\\bdef\\b)\\s+\\w+\\s*\\(.*\\))",
+			"end": "(;)|(})",
+			"name": "meta.function.quova",
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#visibility-modifiers"
+				},
+				{
+					"include": "#inheritance-modifiers"
+				},
+				{
+					"match": "\\b(static|inline|tailrec|strictfp|synchronized|suspend)\\b",
+					"name": "keyword.modifier.function.quova"
+				},
+				{
+					"begin": "(?=<)",
+					"end": "(?<=>)",
+					"name": "meta.function.type-params.quova",
+					"patterns": [
+						{
+							"include": "#type-params"
+						}
+					]
+				},
+				{
+					"begin": "(?=\\()",
+					"end": "(?<=\\))(?=\\s*(=>|{|;))",
+					"name": "meta.function.value-params.quova",
+					"patterns": [
+						{
+							"include": "#value-params"
+						}
+					]
+				},
+				{
+					"begin": "{",
+					"end": "(?=})",
+					"name": "meta.function.body.quova",
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#declarations"
+						}
+					]
+				},
+				{
+					"begin": "=>",
+					"end": "(?=;)",
+					"name": "keyword.control.visibility.quova"
+				},
+				{
+					"match": "\\s+(\\w+)(?=\\s*\\()",
+					"captures": {
+						"1": {
+							"name": "entity.name.function.quova"
+						}
+					},
+					"name": "meta.function.identifier.quova"
+				},
+				{
+					"match": "\\bdef\\b",
+					"name": "keyword.type.interfere.quova"
+				},
+				{
+					"include": "#types"
+				}
+			]
+		},
+		"property-declaration": {
+			"begin": "(?=\\w?[\\w\\s]*(\\b.+\\b(\\s*<.+>)?(\\s*\\[\\])*(\\s*\\?)?|var)\\s+\\w+\\s*(=|<-|{|,|;))",
+			"end": ";",
+			"name": "meta.property.quova",
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#visibility-modifiers"
+				},
+				{
+					"include": "#inheritance-modifiers"
+				},
+				{
+					"match": "\\b(volatile|transient|readonly|const)\\b",
+					"name": "keyword.modifier.property.quova"
+				},
+				{
+					"begin": "{",
+					"end": "}",
+					"name": "entity.name.function.quova"
+				},
+				{
+					"begin": "(=)|(<-)",
+					"end": "(?=,|;)",
+					"name": "comment.line.quova"
+				},
+				{
+					"match": ",",
+					"name": "punctuation.enumerator.quova"
+				},
+				{
+					"match": "\\s+(\\w+)(?=\\s*(=|<-|{|,|;))",
+					"captures": {
+						"1": {
+							"name": "variable.other.property.quova"
+						}
+					},
+					"name": "meta.property.identifier.quova"
+				},
+				{
+					"match": "\\bvar\\b",
+					"name": "keyword.type.interfere.quova"
+				},
+				{
+					"include": "#types"
+				}
+			]
+		},
+		"class-members": {
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#declarations"
+				}
+			]
+		},
+		"value-params": {
+			"begin": "\\(",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.bracket.round.open.quova"
+				}
+			},
+			"end": "\\)",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.bracket.round.close.quova"
+				}
+			},
+			"name": "meta.value-params.quova",
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"begin": "(?<=\\(|,)",
+					"end": "\\b(\\w+)\\b\\s*(?=,|\\))",
+					"endCaptures": {
+						"1": {
+							"name": "variable.parameter.quova"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#types"
+						}
+					]
+				},
+				{
+					"match": ",",
+					"name": "punctuation.enumerator.quova"
+				}
+			]
+		},
+		"type-params": {
+			"begin": "<",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.bracket.angle.open.quova"
+				}
+			},
+			"end": ">",
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.bracket.angle.close.quova"
+				}
+			},
+			"name": "meta.type-params.quova",
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"begin": "(?<=<|,)",
+					"end": "(?=,|>)",
+					"endCaptures": {
+						"1": {
+							"name": "variable.parameter.quova"
+						},
+						"2": {
+							"name": "meta.type-params.constraints.quova",
+							"patterns": [
+								{
+									"include": "#comments"
+								},
+								{
+									"begin": "(?<=[:&]\\s*)",
+									"end": "(?=\\s*[&,>])",
+									"name": "entity.name.function.quova",
+									"patterns": [
+										{
+											"include": "#comments"
+										},
+										{
+											"include": "#types"
+										}
+									]
+								},
+								{
+									"match": ":",
+									"name": "punctuation.separator.quova"
+								},
+								{
+									"match": "&",
+									"name": "punctuation.enumerator.quova"
+								}
+							]
+						}
+					},
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"match": "\\b(in|out|reified)\\b",
+							"name": "storage.modifiers.type-parameter"
+						},
+						{
+							"begin": "(:)",
+							"end": "(?=,|>)",
+							"name": "meta.type-params.constraints.quova",
+							"patterns": [
+								{
+									"include": "#comments"
+								},
+								{
+									"begin": "(?<=[:&]\\s*)",
+									"end": "(?=\\s*[&,>])",
+									"name": "entity.name.function.quova",
+									"patterns": [
+										{
+											"include": "#comments"
+										},
+										{
+											"include": "#types"
+										}
+									]
+								},
+								{
+									"match": ":",
+									"name": "punctuation.separator.quova"
+								},
+								{
+									"match": "&",
+									"name": "punctuation.enumerator.quova"
+								}
+							]
+						},
+						{
+							"match": "\\b(\\w+)\\b",
+							"name": "variable.parameter.quova"
+						}
+					]
+				},
+				{
+					"match": ",",
+					"name": "punctuation.enumerator.quova"
+				}
+			]
+		},
+		"type-args": {
+			"begin": "<",
+			"end": ">",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.bracket.angle.open.quova"
+				}
+			},
+			"endCaptures": {
+				"0": {
+					"name": "punctuation.bracket.angle.close.quova"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"begin": "(?<=[<,]\\s*)",
+					"end": "(?=\\s*[,>])",
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#types"
+						}
+					]
+				},
+				{
+					"match": ",",
+					"name": "punctuation.enumerator.quova"
+				}
+			]
+		},
+		"value-args": {
+			"begin": "(",
+			"end": ")",
+			"name": "comment.line.quova"
+		},
+		"types": {
+			"patterns": [
+				{
+					"match": "\\b(?:byte|sbyte|short|ushort|int|uint|long|ulong|float|double|char|boolean|void|decimal)\\b(?:\\s*\\[\\])*(?:\\s*\\?)?",
+					"name": "keyword.type.builtin.quova"
+				},
+				{
+					"begin": "(\\w+)(?=<)",
+					"end": "(?<=>)(\\s*\\[\\])*(\\s*\\?)?",
+					"beginCaptures": {
+						"1": {
+							"name": "entity.name.type.quova"
+						}
+					},
+					"endCaptures": {
+						"1": {
+							"name": "comment.line.quova"
+						}
+					},
+					"name": "meta.type.generic.quova",
+					"patterns": [
+						{
+							"include": "#comments"
+						},
+						{
+							"include": "#type-args"
+						}
+					]
+				},
+				{
+					"match": "(\\w+)(\\s*\\[\\])*(\\s*\\?)?",
+					"captures": {
+						"1": {
+							"name": "entity.name.type.quova"
+						},
+						"2": {
+							"name": "comment.line.quova"
+						}
+					},
+					"name": "meta.type.quova"
+				}
+			]
+		},
+		"visibility-modifiers": {
+			"match": "\\b(public|private|protected|internal)\\b",
+			"name": "keyword.modifier.visibility.quova"
+		},
+		"inheritance-modifiers": {
+			"match": "\\b(final|abstract)\\b",
+			"name": "keyword.modifier.inheritance.quova"
+		},
+		"comments": {
+			"patterns": [
+				{
+					"match": "/\\*\\*/",
+					"name": "comment.block.empty.quova"
+				},
+				{
+					"begin": "/\\*",
+					"end": "\\*/",
+					"name": "comment.block.quova"
+				},
+				{
+					"begin": "//",
+					"end": "$",
+					"name": "comment.line.quova"
+				}
+			]
+		}
+	}
+}
